@@ -41,6 +41,43 @@ app.all('/', function(req, res, next) {
 //          PRODUCTS
 //================================================
 
+app.post('/api/product/shop', (req,res) => {
+  let order = req.body.order ? req.body.order : "desc";
+  let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
+  let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+  let skip = parseInt(req.body.skip);
+  let findArgs = {};
+  let filters = req.body.filters;
+  console.log('filters are ', filters);
+
+  for(let key in filters) {
+    if(filters[key].length > 0) {
+      if(key === 'prices') {
+        findArgs[key] = {
+          $gte: filters[key][0],
+          $lte: filters[key][1]
+        }
+      } else {
+        findArgs[key] = filters[key]
+      }
+    }
+  }
+
+    Product
+    .find(findArgs)
+    .populate('brand') 
+    .populate('wood')
+    .bort([[sortBy, order]])
+    .skip(skip)
+    .limit(limit)
+    .exec(() => {
+      
+    })
+
+  res.status(200)
+
+})
+
 //By Arrival
 // /article?sortBy=createdAt&order=desc&lemit=4
 //By sold
@@ -111,7 +148,7 @@ app.get('/api/product/getarticles', (req, res) => {
 //          WOODS
 //================================================
 
-app.post('/api/product/wood', auth, admin, (req, res) => {
+app.post('/api/product/woods', auth, admin, (req, res) => {
   const wood = new Wood(req.body);
 
   wood.save((err, doc) => {
@@ -135,7 +172,7 @@ app.get('/api/product/getwoods', (req, res) => {
 //          BRANDS
 //================================================
 
-app.post('/api/product/brand', auth, admin, (req, res) => {
+app.post('/api/product/brands', auth, admin, (req, res) => {
   const brand = new Brand(req.body);
 
   brand.save((err, doc) => {
@@ -211,7 +248,7 @@ app.post('/api/users/login', (req, res) => {
 
 })
 
-app.get('/api/user/logout', auth, (req, res) => {
+app.get('/api/users/logout', auth, (req, res) => {
   User.findOneAndUpdate(
     {_id: req.user._id},
     { token: '' },
