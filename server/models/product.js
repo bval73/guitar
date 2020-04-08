@@ -15,13 +15,13 @@ const productSchema = new Schema({
   },
   price: {
     required: true, 
-    type: String,
+    type: Number,
     maxlength: 255
   },
   brand: {
     type: Schema.Types.ObjectId,
     ref: 'Brand',
-    required: true,
+    required: true
   },
   shipping: {
     required: true,

@@ -8,6 +8,8 @@ import { getProductsToShop, getBrands, getWoods } from '../../actions/products_a
 import CollapseCheckbox from '../utils/collapseCheckbox';
 import CollapseRadio from '../utils/collapseRadio';
 
+import LoadmoreCards from './loadmoreCards';
+
 class Shop extends Component {
 
   state = {
@@ -15,10 +17,10 @@ class Shop extends Component {
     limit:6,
     skip:0,
     filters: {
-      brands: [],
+      brand: [],
       frets: [],
-      woods: [],
-      prices: []
+      wood: [],
+      price: []
     }
   }
 
@@ -50,21 +52,34 @@ class Shop extends Component {
     const newFilters = {...this.state.filters}
     newFilters[category] = filters;
 
-    if(category === "prices") {
+    if(category === "price") {
       let priceValues = this.handlePrice(filters)
       newFilters[category] = priceValues;
     }
 
+    this.showFilteredResults(newFilters);
     this.setState({
       filters: newFilters
     })
 
   }
 
+  showFilteredResults = (filters) => {
+
+    this.props.dispatch(getProductsToShop(
+      0,
+      this.state.limit,
+      filters
+    )).then(() => {
+      this.setState({
+        skip:0
+      })
+    })
+  }
+
   render() {
-//    const products = this.props.products;
-    console.log('filters ', this.state.filters)
-//    console.log('the price ', prices)
+//    console.log('filters ', this.state.filters)
+    const products = this.props.products;
     const brands = this.props.products.brands ? this.props.products.brands.brands : null;
     const woods = this.props.products.woods ? this.props.products.woods.woods : null;
 
@@ -78,7 +93,7 @@ class Shop extends Component {
                 initState={false}
                 title="brands"
                 list={brands}
-                handleFilters={(filters) => this.handleFilters(filters,'brands')}
+                handleFilters={(filters) => this.handleFilters(filters,'brand')}
               />
               <CollapseCheckbox
                 initState={false}
@@ -90,17 +105,30 @@ class Shop extends Component {
                 initState={false}
                 title="woods"
                 list={woods}
-                handleFilters={(filters) => this.handleFilters(filters,'woods')}
+                handleFilters={(filters) => this.handleFilters(filters,'wood')}
               />
               <CollapseRadio
                 initState={true}
                 title="price"
                 list={prices}
-                handleFilters={(filters) => this.handleFilters(filters,'prices')}
+                handleFilters={(filters) => this.handleFilters(filters,'price')}
               />
             </div>
             <div className="right">
-              right
+              <div className="shop_options">
+                <div className="shop_grids clear">
+                  Grids
+                </div>
+              </div>
+              <div>
+                <LoadmoreCards 
+                  gird={this.state.grid}
+                  limit={this.state.limit}
+                  size={products.toShopSize}
+                  products={products.toShop}
+                  loadMore={() => console.log('load more')}
+                />
+              </div>
             </div>
           </div>
         </div>

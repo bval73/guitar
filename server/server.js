@@ -48,7 +48,6 @@ app.post('/api/product/shop', (req,res) => {
   let skip = parseInt(req.body.skip);
   let findArgs = {};
   let filters = req.body.filters;
-  console.log('filters are ', filters);
 
   for(let key in filters) {
     if(filters[key].length > 0) {
@@ -67,15 +66,18 @@ app.post('/api/product/shop', (req,res) => {
     .find(findArgs)
     .populate('brand') 
     .populate('wood')
-    .bort([[sortBy, order]])
+    .sort([[sortBy, order]])
     .skip(skip)
     .limit(limit)
-    .exec(() => {
-      
+    .exec((err, articles) => {
+      if(err) return res.status(400).send(err);
+      res.status(200).json({
+        size: articles.length,
+        articles
+      })
     })
 
   res.status(200)
-
 })
 
 //By Arrival

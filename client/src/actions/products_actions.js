@@ -8,7 +8,6 @@ import { GET_PRODUCTS_BY_SELL,
 } from './types';
 
 import { PRODUCT_SERVER } from '../components/utils/misc';
-import { response } from 'express';
 
 
 //////////////////////////////////////
