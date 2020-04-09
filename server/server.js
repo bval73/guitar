@@ -46,7 +46,9 @@ app.post('/api/product/shop', (req,res) => {
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
   let skip = parseInt(req.body.skip);
-  let findArgs = {};
+  let findArgs = {
+    'publish': true
+  };
   let filters = req.body.filters;
 
   for(let key in filters) {
@@ -61,6 +63,7 @@ app.post('/api/product/shop', (req,res) => {
       }
     }
   }
+
 
     Product
     .find(findArgs)
