@@ -9,6 +9,9 @@ import CollapseCheckbox from '../utils/collapseCheckbox';
 import CollapseRadio from '../utils/collapseRadio';
 
 import LoadmoreCards from './loadmoreCards';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faBars from '@fortawesome/fontawesome-free-solid/faBars';
+import faTh from '@fortawesome/fontawesome-free-solid/faTh';
 
 class Shop extends Component {
 
@@ -65,7 +68,7 @@ class Shop extends Component {
   }
 
   showFilteredResults = (filters) => {
-
+    console.log('Filters ', filters)
     this.props.dispatch(getProductsToShop(
       0,
       this.state.limit,
@@ -77,8 +80,29 @@ class Shop extends Component {
     })
   }
 
+  loadMoreCards = () => {
+    let skip = this.state.skip + this.state.limit;
+
+    this.props.dispatch(getProductsToShop(
+      skip,
+      this.state.limit,
+      this.state.filters,
+      this.props.products.toShop
+    )).then(() => {
+      this.setState({
+        skip
+      })
+    })
+  }
+
+  handleGrid = () => {
+    this.setState({
+      grid: !this.state.grid ? 'grid_bars' :''
+    })
+  }
+
   render() {
-//    console.log('filters ', this.state.filters)
+//    console.log('props ', this.props)
     const products = this.props.products;
     const brands = this.props.products.brands ? this.props.products.brands.brands : null;
     const woods = this.props.products.woods ? this.props.products.woods.woods : null;
@@ -117,16 +141,27 @@ class Shop extends Component {
             <div className="right">
               <div className="shop_options">
                 <div className="shop_grids clear">
-                  Grids
+                  <div className={`grid_btn ${this.state.grid ? '' :'active'}`}
+                    onClick={() => this.handleGrid()}
+                  >
+                    <FontAwesomeIcon icon={faTh} />
+
+                  </div>
+                  <div className={`grid_btn ${!this.state.grid ? '' :'active'}`}
+                    onClick={() => this.handleGrid()}
+                  >
+                    <FontAwesomeIcon icon={faBars} />
+
+                  </div>
                 </div>
               </div>
               <div>
                 <LoadmoreCards 
-                  gird={this.state.grid}
+                  grid={this.state.grid}
                   limit={this.state.limit}
                   size={products.toShopSize}
                   products={products.toShop}
-                  loadMore={() => console.log('load more')}
+                  loadMore={() => this.loadMoreCards()}
                 />
               </div>
             </div>
