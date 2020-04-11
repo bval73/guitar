@@ -41,7 +41,7 @@ const Button = (props) => {
   }
 
   return (
-    <div class="my_link">
+    <div className="my_link">
       {buttons()}
       
     </div>
