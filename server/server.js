@@ -63,7 +63,7 @@ app.post('/api/product/shop', (req,res) => {
 
   for(let key in filters) {
     if(filters[key].length > 0) {
-      if(key === 'prices') {
+      if(key === 'price') {
         findArgs[key] = {
           $gte: filters[key][0],
           $lte: filters[key][1]

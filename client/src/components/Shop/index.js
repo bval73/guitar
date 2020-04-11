@@ -104,8 +104,8 @@ class Shop extends Component {
   render() {
 //    console.log('props ', this.props)
     const products = this.props.products;
-    const brands = this.props.products.brands ? this.props.products.brands.brands : null;
-    const woods = this.props.products.woods ? this.props.products.woods.woods : null;
+    const brands = this.props.products.brands;
+    const woods = this.props.products.woods;
 
     return (
       <div>
