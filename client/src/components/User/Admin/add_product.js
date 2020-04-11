@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import UserLayout from '../../../hoc/user';
 import Formfield from '../../utils/Form/formfield';
 import { update, generateData, isFormValid, populateOptionFields, resetFields } from '../../utils/Form/formActions';
+import FileUpload from '../../utils/Form/fileupload';
 
-import Dialog from '@material-ui/core/Dialog';
+//import Dialog from '@material-ui/core/Dialog';
 
 import { connect } from 'react-redux';
 import { getBrands, getWoods, addProduct, clearProduct } from '../../../actions/products_actions';
@@ -174,6 +175,16 @@ class AddProduct extends Component {
         touched: false,
         validationMessage: '',
         showlabel: true
+      },
+      images: {
+        value:[],
+        validation:{
+          required: false
+        },
+        valid: false,
+        touched: false,
+        validationMessage: '',
+        showlabel: false
       }
     }
   }
@@ -211,13 +222,13 @@ class AddProduct extends Component {
     this.setState({
       formdata: newFormData,
       formSuccess: true
-    }, () => {
-      this.props.dispatch(clearProduct())  
     });
     setTimeout(() => {
       this.setState({
         formSuccess: false
       })
+    }, () => {
+      this.props.dispatch(clearProduct())  
     },3000)
   }
 
@@ -255,7 +266,18 @@ class AddProduct extends Component {
       const newFormData = populateOptionFields(formdata, this.props.products.woods.woods, 'wood');
       this.updateFields(newFormData);
     })
+  }
 
+  imagesHandler = (images) => {
+    const newFormData = {
+      ...this.state.formdata
+    }
+    newFormData['images'].value = images;
+    newFormData['images'].valid = true;
+
+    this.setState({
+      formdata: newFormData
+    })
   }
 
  
@@ -269,6 +291,10 @@ class AddProduct extends Component {
 {
 // finish function buildFormFields to clean up code ... 
 }
+            <FileUpload 
+              imagesHandler={(images) => this.imagesHandler(images)}
+              reset={this.state.formSuccess}
+            />
             <Formfield 
               id={'name'}
               formdata={this.state.formdata.name}
