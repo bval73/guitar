@@ -19,7 +19,7 @@ class AddProduct extends Component {
         element: 'input',
         value: '',
         config: {
-          label: 'Product Name',
+          label: 'Product Model',
           name: 'name.input',
           type: 'text',
           placeholder: 'Enter product name'
@@ -186,8 +186,10 @@ class AddProduct extends Component {
         validationMessage: '',
         showlabel: false
       }
+//      user: {}
     }
   }
+  
 
   buildFormFields = () => {
     //flip through the object keys in the render to fill the form
@@ -211,6 +213,8 @@ class AddProduct extends Component {
 
   updateForm =(element) => {
     const newFormdata = update(element, this.state.formdata, 'product');
+//    newFormdata['user'] = this.props.user.userData.user;
+//console.log('newFormdata user is ', newFormdata['user']);    
     this.setState({
       formError: false,
       formdata: newFormdata
@@ -240,11 +244,13 @@ class AddProduct extends Component {
 
     if(formIsValid) {
       this.props.dispatch(addProduct(dataToSubmit))
-      .then(() => {
+      .then((response) => {
         if(this.props.products.addProduct.success) {
           this.resetFieldHandler();
         } else {
           this.setState({formError: true})
+          console.log('data to submit add_product error', dataToSubmit);
+          console.log(response);
         }
       })
     } else {
@@ -257,13 +263,13 @@ class AddProduct extends Component {
 
     this.props.dispatch(getBrands()).then( response => {
 //      console.log('Brands ', this.props.products.brands);
-      const newFormData = populateOptionFields(formdata, this.props.products.brands.brands, 'brand');
+      const newFormData = populateOptionFields(formdata, this.props.products.brands, 'brand');
       this.updateFields(newFormData);
     })
 
     this.props.dispatch(getWoods()).then( response => {
 //      console.log('Woods ', this.props.products.woods);
-      const newFormData = populateOptionFields(formdata, this.props.products.woods.woods, 'wood');
+      const newFormData = populateOptionFields(formdata, this.props.products.woods, 'wood');
       this.updateFields(newFormData);
     })
   }

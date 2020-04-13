@@ -1,4 +1,5 @@
 const express = require('express'),
+      app = express(),
       bodyParser = require('body-parser'),
       config = require('./config'),
       mongoose = require('mongoose'),
@@ -9,17 +10,16 @@ const express = require('express'),
 
 
 
-const app = express();
 require('dotenv').config();
 
 mongoose.Promise = global.Promise;
-//mongoose.connect(config.DB_URI);
 
-mongoose.connect(config.DB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
+mongoose.connect(config.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+    // if(process.env.NODE_ENV !== 'production'){
+    //     const fakeDb = new FakeDb();
+    //     fakeDb.seedDb();
+    // }
+  });
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -52,6 +52,7 @@ app.all('/', function(req, res, next) {
 //================================================
 
 app.post('/api/product/shop', (req,res) => {
+  
   let order = req.body.order ? req.body.order : "desc";
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
   let limit = req.body.limit ? parseInt(req.body.limit) : 100;
@@ -142,7 +143,7 @@ app.get('/api/product/articles_by_id', (req, res) => {
 
 app.post('/api/product/article', auth, admin, (req, res) => {
   const product = new Product(req.body);
-
+console.log('product in server.js', product);  
   product.save((err, doc) => {
     if(err) return res.json({success: false, err});
     res.status(200).json({
@@ -153,6 +154,7 @@ app.post('/api/product/article', auth, admin, (req, res) => {
 });
 
 app.get('/api/product/getarticles', (req, res) => {
+  
   Product.find({}, (err, articles) => {
     if(err) return res.status(400).send(err);
     res.status(200).send({articles})
@@ -222,7 +224,8 @@ app.get('/api/users/auth', auth, (req, res) => {
     lastname: req.user.lastname,
     role: req.user.role,
     cart: req.user.cart,
-    history: req.user.history
+    history: req.user.history,
+    user: req.user._id
   })
 })
 
@@ -260,7 +263,6 @@ app.post('/api/users/login', (req, res) => {
     })
 
   })
-
 })
 
 app.get('/api/users/logout', auth, (req, res) => {
@@ -278,7 +280,7 @@ app.get('/api/users/logout', auth, (req, res) => {
 
 app.post('/api/users/uploadimage', auth, admin, formidable(), (req, res) => {
   cloudinary.uploader.upload(req.files.file.path, (result) => {
-    console.log(result);
+//    console.log(result);
     res.status(200).send({
       public_id: result.public_id,
       url: result.url

@@ -84,10 +84,11 @@ export function getProductsToShop(skip, limit, filters = [], previousState = [])
     type: GET_PRODUCTS_TO_SHOP,
     payload: request
   }
-
 }
 
+
 export function addProduct(dataToSubmit) {
+  console.log('data to submit action ', dataToSubmit);
   const request = axios.post(`${PRODUCT_SERVER}/article` ,dataToSubmit)
         .then(response => response.data);
 
@@ -95,7 +96,6 @@ export function addProduct(dataToSubmit) {
     type: ADD_PRODUCT,
     payload: request
   }
-
 }
 
 export function clearProduct() {

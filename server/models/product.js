@@ -5,7 +5,6 @@ const productSchema = new Schema({
   name: {
     required: true, 
     type: String,
-    unique: 1,
     maxlength: 100
   },
   description: {
@@ -52,8 +51,14 @@ const productSchema = new Schema({
   images: {
     type: Array,
     default: []
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+//    required: true
   }
 },{timestamps: true});
 
+//module.exports = mongoose.model('Product', productSchema);
 const Product = mongoose.model('Product', productSchema);
 module.exports = { Product }
