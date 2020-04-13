@@ -1,44 +1,50 @@
 {
     "brands": [{
       "name" : "Fender"
-    },
-    
-    {
-     
+    },{
       "name" : "Ibanez"
-
-    },
-    
-    {
-      
+    },{
       "name" : "Charvel"
-    },
-    
-    {
-     
+    },{
       "name" : "Jackson"
-    },
-    
-    {
-     
+    },{
       "name" : "Gibson"
-    },
-    
-    {
+    },{
       "name" : "Cort"
-    },
-    
-    {
+    },{
       "name" : "Schecter"
-    },
-    
-    {
+    },{
       "name" : "Reverend"
-    },
-    
-    {
+    },{
       "name" : "Ernie ball"
     }
-  ]
+  ],
+  "products": [{
+    "sold" :0,
+    "images": [],
+    "name":"AZ2402",
+    "description":"Nice Fender style guitar",
+    "price":1999,
+    "brand":"5e7e4a7dac0e4e1af8ad3ea4",
+    "shipping":true,
+    "available":true,
+    "wood":"5e7ea7e10041662f404d6b5a",
+    "frets":24,
+    "publish":true
+  }],
+  "users":[{
+    "role":1,
+    "name":"William",
+    "lastname":"Valentine",
+    "email":"bvalentineii@hotmail.com",
+    "password":"gagt5166"
+  },
+  {
+    "role":1,
+    "name":"Billy",
+    "lastname":"Bob",
+    "email":"billybob@gmail.com",
+    "password":"billybob"
+  }]
 }
 

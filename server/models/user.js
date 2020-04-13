@@ -48,7 +48,11 @@ const userSchema = new Schema({
     },
     token: {
       type: String
-    }
+    },
+    product: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Product'
+  }]
 })
 
 //check if password is the same as password on file
@@ -94,6 +98,13 @@ userSchema.methods.generateToken = function(cb) {
   })
 }
 
+userSchema.methods.decode = function(token) {
+  // this.setState({
+  //   user: jwt.decode(token) 
+  // })
+  return jwt.decode(user.token);
+}
+
 userSchema.statics.findByToken = function(token, cb) {
   const user = this;
 
@@ -110,4 +121,3 @@ const User = mongoose.model('User',userSchema);
 
 module.exports = { User }
 
-//module.exports = mongoose.model('User', userSchema);

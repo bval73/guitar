@@ -68,7 +68,7 @@ class Shop extends Component {
   }
 
   showFilteredResults = (filters) => {
-    console.log('Filters ', filters)
+//    console.log('Filters ', filters)
     this.props.dispatch(getProductsToShop(
       0,
       this.state.limit,
