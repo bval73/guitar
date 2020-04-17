@@ -2,10 +2,14 @@ import axios from 'axios';
 import { LOGIN_USER,
          REGISTER_USER,
          AUTH_USER,
-         LOGOUT_USER
+         LOGOUT_USER,
+         ADD_TO_CART,
+         GET_CART_ITEMS,
+         REMOVE_CART_ITEM,
+         ON_SUCCESS_BUY
 } from './types';
 
-import { USER_SERVER } from '../components/utils/misc';
+import { USER_SERVER, PRODUCT_SERVER } from '../components/utils/misc';
 
 
 export function loginUser(dataToSubmit) {
@@ -47,3 +51,68 @@ export function logoutUser() {
     payload: request
   }
 }
+
+export function addToCart(_id) {
+
+  const request = axios.post(`${USER_SERVER}/addToCart?productId=${_id}`)
+    .then(response => response.data )
+  
+  return {
+    type: ADD_TO_CART,
+    payload: request
+  }
+}
+
+//prepare for the user cart page
+export function getCartItems(cartItems, userCart) {
+
+  const request = axios.get(`${PRODUCT_SERVER}/articles_by_id?id=${cartItems}&type=array`)
+    .then(response => {
+      
+      userCart.forEach(item => {
+        response.data.forEach((k,i) => {
+          if(item.id === k._id) {
+            response.data[i].quantity = item.quantity;
+          }
+        })
+      });
+      return response.data;
+    })
+  
+  return {
+    type: GET_CART_ITEMS,
+    payload: request
+  }
+}
+
+export function removeCartItem(id) {
+
+  const request = axios.get(`${USER_SERVER}/RemoveFromCart?_id=${id}`)
+    .then(response => {
+      response.data.cart.forEach(item => {
+        response.data.cartDetail.forEach((k,i) => {
+          if(item.id === k._id) {
+            response.data.cartDetail[i].quantity = item.quantity;
+          }
+        })
+      })
+      return response.data;
+    })
+
+  return {
+    type: REMOVE_CART_ITEM,
+    payload: request
+  }
+}
+
+export function onSuccessBuy(data) {
+
+  const request = axios.post(`${USER_SERVER}/successBuy`, data)
+                    .then(response => response.data);
+
+  return {
+    type: ON_SUCCESS_BUY,
+    payload: request
+  }
+}
+

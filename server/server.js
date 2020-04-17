@@ -6,7 +6,8 @@ const express = require('express'),
 //      FakeDb = require('./fake-db'),
       cookieParser = require('cookie-parser'),
       formidable = require('express-formidable'),
-      cloudinary = require('cloudinary');
+      cloudinary = require('cloudinary'),
+      async = require('async');
 
 
 
@@ -14,7 +15,7 @@ require('dotenv').config();
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(config.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+mongoose.connect(config.GUITAR_DB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
     // if(process.env.NODE_ENV !== 'production'){
     //     const fakeDb = new FakeDb();
     //     fakeDb.seedDb();
@@ -35,6 +36,7 @@ const { User } = require('./models/user');
 const { Brand } = require('./models/brand');
 const { Wood } = require('./models/wood');
 const { Product } = require('./models/product');
+const { Payment } = require('./models/payment');
 
 //Middleware
 const { auth } =require('./middleware/auth');
@@ -300,13 +302,149 @@ app.get('/api/users/removeimage', auth, admin, (req,res) => {
   });
 })
 
+app.post('/api/users/addToCart/', auth, (req,res) => {
+
+  User.findOne({ _id: req.user._id}, (err,doc) => {
+    let duplicate = false;
+
+    doc.cart.forEach((item) => {
+      if(item.id == req.query.productId) {
+        duplicate = true;
+      }
+    })
+
+    if(duplicate) {
+      User.findOneAndUpdate(
+        {_id: req.user._id, "cart.id": mongoose.Types.ObjectId(req.query.productId)},
+        { $inc: {"cart.$.quantity":1} },
+        {new:true},
+        (err,doc) => {
+          if(err) return res.json({success: false, err}); 
+          res.status(200).json(doc.cart)
+        }
+      )
+    } else {
+      User.findOneAndUpdate(
+        {_id: req.user._id},
+        {$push:{ cart: {
+          id: mongoose.Types.ObjectId(req.query.productId),
+          quantity:1,
+          date: Date.now()
+        } }},
+        //this sends current cart with new product added and not prev one...
+        { new: true }, 
+        (err,doc) => {
+          if(err) return res.json({success: false, err}); 
+          res.status(200).json(doc.cart)
+        }
+      )
+    }
+  })
+})
+
+app.get('/api/users/removeFromCart', auth, (req,res) => {
+
+  User.findByIdAndUpdate(
+    {_id: req.user._id},
+    { "$pull": 
+      { "cart": {"id": mongoose.Types.ObjectId(req.query._id) } } 
+    },
+    { new: true },
+    (err,doc) => {
+      let cart = doc.cart;
+      let array = cart.map(item => {
+        return mongoose.Types.ObjectId(item.id)
+      });
+
+      Product.find({"_id": {$in: array}})
+      .populate('brand')
+      .populate('wood')
+      .exec((err, cartDetail) => {
+        return res.status(200).json({
+          cartDetail,
+          cart
+        })
+      })
+    }
+  );
+})
+
+app.post('/api/users/successBuy', auth, (req, res) => {
+
+  let history = [];
+  let transactionData = {};
+  let user = req.user;
+
+  //TODO user history
+  req.body.cartDetail.forEach((item) => {
+    history.push({
+      dateOfPurchase: Date.now(),
+      name: item.name,
+      brand: item.brand.name,
+      id: item._id,
+      price: item.price,
+      quantity: item.quantity,
+      paymentId: req.body.paymentData.paymentID
+    })
+  })
+
+  //TODO payment info
+  transactionData.user = {
+    id: user._id,
+    name: user.name,
+    lastname: user.lastname,
+    email: user.email
+  }
+  transactionData.data = req.body.paymentData;
+  transactionData.product = history;
+
+  User.findOneAndUpdate(
+    { _id: user._id },
+    { $push: {history: history}, $set:{cart: [] } },
+    { new: true },
+    (err, user) => {
+      if(err) return res.status(401).json({succes: false, err});
+        
+        const payment = new Payment(transactionData);
+        payment.save((err,doc) => {
+          if(err) return res.status(401).json({succes: false, err});
+
+          let products = [];
+          
+          doc.product.forEach(item => {
+            products.push({id: item.id, quantity: item.quantity})
+          })
+//for each item in the products array update  quantity
+          async.eachSeries(products, (item, callback) => {
+            Product.update(
+              {_id: item.id},
+              {$inc: {
+                "sold": item.quantity
+              }},
+              {new: false},
+              callback
+            )
+          },(err) => {
+            if(err) res.status(401).json({succes: false, err});
+            res.status(200).json({
+              success: true,
+              cart: user.cart,
+              cartDetail: []
+            })
+          })
+
+        })
+    }
+  )
+
+})
+
 
 const port = process.envPORT || 3001;
 
 app.listen(port, () => {
   console.log(`Server Running on port ${port}`);
 })
-
 
 
 // if(process.env.NODE_ENV === 'production'){

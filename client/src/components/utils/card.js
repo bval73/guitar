@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Button from '../utils/button';
 
+
+import { connect } from 'react-redux';
+import { addToCart } from '../../actions/user_actions';
+
 class Card extends Component {
 
   renderCardImage(images) {
@@ -54,7 +58,11 @@ class Card extends Component {
                 <Button 
                   type="bag_link"
                   runAction={() => {
-  //                  console.log('added to cart')
+                    props.user.userData.isAuth ?
+                      this.props.dispatch(addToCart(props._id))
+                    :
+                      //TODO need to let people know to log in first a modal with log in area would be a good idea.
+                      console.log('You need to be signed in before you can add to the cart');
                   }}
                 />
             </div>
@@ -65,4 +73,11 @@ class Card extends Component {
   }
 }
 
-export default Card;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps)(Card);
+
