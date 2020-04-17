@@ -16,7 +16,7 @@
     "react-dropzone": "^4.2.12",
     "react-images": "^0.5.17",
     "react-moment": "^0.7.7",
-    "react-paypal-express-checkout": "^1.0.4",
+    "react-paypal-express-checkout": "^1.0.5",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-scripts": "3.4.1",
@@ -31,7 +31,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy":  "http://localhost:3001",
+  "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": "react-app"
   },
