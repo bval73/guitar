@@ -31,12 +31,15 @@ cloudinary.config({
   api_secret: config.CLOUD_API_SECRET
 })
 
+//===========================================
 //              Models
+//===========================================
 const { User } = require('./models/user');
 const { Brand } = require('./models/brand');
 const { Wood } = require('./models/wood');
 const { Product } = require('./models/product');
 const { Payment } = require('./models/payment');
+const { Site } = require('./models/site')
 
 //Middleware
 const { auth } =require('./middleware/auth');
@@ -434,6 +437,49 @@ app.post('/api/users/successBuy', auth, (req, res) => {
           })
 
         })
+    }
+  )
+
+})
+
+app.post('/api/users/update_profile', auth, (req, res) => {
+  User.findByIdAndUpdate(
+    { _id: req.user._id },
+    {
+      "$set": req.body
+    },
+    { new: true},
+    (err, doc) => {
+      if(err) return res.json({success: false, err});
+      return res.status(200).send({
+        success:true
+      })
+    }
+  );
+})
+
+//===========================================
+//              Site
+//===========================================
+
+app.get('/api/site/site_data', (req, res) => {
+  Site.find({}, (err, site) => {
+    if(err) res.status(401).send(err);
+    res.status(200).send(site[0].siteInfo);
+  });
+});
+
+app.post('/api/site/site_data', auth, admin, (req, res) => {
+  Site.findOneAndUpdate(
+    {name: 'Site'},
+    {"$set": {siteInfo: req.body}},
+    {new: true},
+    (err,doc) => {
+      if(err) return res.json({success:false, err});
+      return res.status(200).send({
+        success: true,
+        siteInfo: doc.siteInfo
+      })
     }
   )
 

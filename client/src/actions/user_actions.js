@@ -3,6 +3,8 @@ import { LOGIN_USER,
          REGISTER_USER,
          AUTH_USER,
          LOGOUT_USER,
+         UPDATE_USER,
+         CLEAR_UPDATE_USER,
          ADD_TO_CART,
          GET_CART_ITEMS,
          REMOVE_CART_ITEM,
@@ -113,6 +115,26 @@ export function onSuccessBuy(data) {
   return {
     type: ON_SUCCESS_BUY,
     payload: request
+  }
+}
+
+export function updateUser(data) {
+
+  const request = axios.post(`${USER_SERVER}/update_profile`, data)
+          .then(response => {
+            return response.data
+          });
+
+  return {
+    type: UPDATE_USER,
+    payload: request
+  }
+}
+
+export function clearUpdateUser() {
+  return {
+    type: CLEAR_UPDATE_USER,
+    payload:''
   }
 }
 

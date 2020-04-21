@@ -1,7 +1,10 @@
 export const LOGIN_USER = 'LOGIN_USER';
 export const REGISTER_USER = 'REGISTER_USER';
+export const UPDATE_USER = 'UPDATE_USER';
+export const CLEAR_UPDATE_USER = 'CLEAR_UPDATE_USER';
 export const AUTH_USER = 'AUTH_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
+
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const GET_CART_ITEMS = 'GET_CART_ITEMS';
 export const REMOVE_CART_ITEM = 'REMOVE_CART_ITEM';
@@ -18,4 +21,7 @@ export const ADD_BRAND = 'ADD_BRAND';
 export const ADD_WOOD = 'ADD_WOOD';
 export const GET_PRODUCT_DETAIL = 'GET_PRODUCT_DETAIL';
 export const CLEAR_PRODUCT_DETAIL = 'CLEAR_PRODUCT_DETAIL';
+
+export const GET_SITE_INFO = 'GET_SITE_INFO';
+export const UPDATE_SITE_INFO = 'UPDATE_SITE_INFO';
 
