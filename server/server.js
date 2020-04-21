@@ -485,6 +485,18 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 
 })
 
+//DEFAULT
+if(process.env.NODE_ENV === 'production'){
+  const appPath = path.join(__dirname, '../client', 'build', 'index.html');
+  app.use(express.static('client/build'))
+
+  app.get('/*', function(req, res){
+      res.sendFile(path.resolve(appPath));
+  });
+}
+
+
+
 
 const port = process.envPORT || 3001;
 
@@ -493,11 +505,3 @@ app.listen(port, () => {
 })
 
 
-// if(process.env.NODE_ENV === 'production'){
-//   const appPath = path.join(__dirname, '..', 'dist');
-//   app.use(express.static(appPath))
-
-//   app.get('*', function(req, res){
-//       res.sendFile(path.resolve(appPath, 'index.html'));
-//   });
-// }
