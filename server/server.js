@@ -486,14 +486,11 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 })
 
 //DEFAULT
-if(process.env.NODE_ENV === 'production'){
+if( process.env.NODE_ENV === 'production' ){
   const path = require('path');
-  const appPath = path.join(__dirname, '../client', 'build', 'index.html');
-  app.use(express.static('client/build'))
-
-  app.get('/*', function(req, res){
-      res.sendFile(path.resolve(appPath));
-  });
+  app.get('/*',(req,res)=>{
+      res.sendfile(path.resolve(__dirname,'../client','build','index.html'))
+  })
 }
 
 
