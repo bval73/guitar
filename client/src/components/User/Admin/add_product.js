@@ -249,8 +249,8 @@ class AddProduct extends Component {
           this.resetFieldHandler();
         } else {
           this.setState({formError: true})
-          console.log('data to submit add_product error', dataToSubmit);
-          console.log(response);
+//          console.log('data to submit add_product error', dataToSubmit);
+//          console.log(response);
         }
       })
     } else {
