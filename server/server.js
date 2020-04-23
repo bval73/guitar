@@ -1,5 +1,6 @@
 const express = require('express'),
       app = express(),
+      path = require("path"),
       bodyParser = require('body-parser'),
       config = require('./config'),
       mongoose = require('mongoose'),
@@ -486,10 +487,10 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ){
-  const path = require('path');
+//  const path = require('path');
   app.get('/',(req,res)=>{
-    console.log('dirname ', path.resolve(__dirname,'../client','build','index.html'));
       res.sendfile(path.resolve(__dirname,'../client','build','index.html'));
+      res.sendfile(path.resolve(__dirname,'../client','build','favicon.ico'));
   })
 }
 

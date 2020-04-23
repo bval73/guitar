@@ -5,9 +5,9 @@ import Layout from './hoc/layout';
 import Auth from './hoc/auth';
 
 import Home from './components/Home/index';
-import RegisterLogin from './components/Register_login';
+import RegisterLogin from './components/Register_login/index';
 import Register from './components/Register_login/register';
-import Shop from './components/Shop';
+import Shop from './components/Shop/index';
 import ProductPage from './components/Product';
 
 import UserDashboard from './components/User';
