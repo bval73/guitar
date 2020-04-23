@@ -25,6 +25,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+app.use(express.static('client/build'));
+
 cloudinary.config({
   cloud_name: config.CLOUD_NAME,
   api_key: config.CLOUD_API_KEY,
@@ -459,7 +461,7 @@ app.post('/api/users/update_profile', auth, (req, res) => {
 })
 
 //===========================================
-//              Site
+//              Site Info
 //===========================================
 
 app.get('/api/site/site_data', (req, res) => {
