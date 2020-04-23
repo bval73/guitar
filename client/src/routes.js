@@ -4,7 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import Layout from './hoc/layout';
 import Auth from './hoc/auth';
 
-import Home from './components/Home';
+import Home from './components/Home/index';
 import RegisterLogin from './components/Register_login';
 import Register from './components/Register_login/register';
 import Shop from './components/Shop';
@@ -29,8 +29,6 @@ const Routes = () => {
         <Route path="/admin/add_product" exact component={Auth(AddProduct, true)} />
         <Route path="/admin/manage_categories" exact component={Auth(ManageCategories, true)} />
         <Route path="/admin/site_info" exact component={Auth(ManageSite, true)} />
-       
-        
         
         <Route path="/product_detail/:id" exact component={Auth(ProductPage, null)} />
         <Route path="/register" exact component={Auth(Register, false)} />

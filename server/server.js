@@ -41,7 +41,7 @@ const { Wood } = require('./models/wood');
 const { Product } = require('./models/product');
 const { Payment } = require('./models/payment');
 const { Site } = require('./models/site')
-  
+
 //Middleware
 const { auth } =require('./middleware/auth');
 const { admin } =require('./middleware/admin');
@@ -49,7 +49,6 @@ const { admin } =require('./middleware/admin');
 app.all('/', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
   next();
 });
 
