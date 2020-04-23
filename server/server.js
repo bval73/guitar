@@ -484,8 +484,9 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
       })
     }
   )
-
 })
+
+console.log('NODE_ENV ', process.env.NODE_ENV);
 
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ){
