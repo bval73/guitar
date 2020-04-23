@@ -10,41 +10,41 @@ const fakeDbData = require('./data.json'),
 
 
 class FakeDb{
-    constructor(){
-        this.products = fakeDbData.products;
+  constructor(){
+      this.products = fakeDbData.products;
 
-        this.user = fakeDbData.users;
-    }
+      this.user = fakeDbData.users;
+  }
 
-    async cleanDb(){
-        await User.remove({});
-        // await Rental.remove({});
-        // await Booking.remove({});
-        // await Payment.remove({});
-        // await Review.remove({});
-        await Product.remove({});
-    }
+  async cleanDb(){
+      await User.remove({});
+      // await Rental.remove({});
+      // await Booking.remove({});
+      // await Payment.remove({});
+      // await Review.remove({});
+      await Product.remove({});
+  }
 
 
-    pushDataToDb(){
-         const user = new User(this.user[0]);
-         const user2 = new User(this.user[1]);
-        
-        this.products.forEach((product) => {
-            const newProduct = new Product(product);
-            newProduct.user = user;
+  pushDataToDb(){
+        const user = new User(this.user[0]);
+        const user2 = new User(this.user[1]);
+      
+      this.products.forEach((product) => {
+          const newProduct = new Product(product);
+          newProduct.user = user;
 
-          user.product.push(newProduct);
-            newProduct.save();
-        });
-        user.save();
-        user2.save();
-    }
+        user.product.push(newProduct);
+          newProduct.save();
+      });
+      user.save();
+      user2.save();
+  }
 
-    async seedDb(){
-        await this.cleanDb();
-        this.pushDataToDb();
-    }
+  async seedDb(){
+      await this.cleanDb();
+      this.pushDataToDb();
+  }
 }
 
 module.exports = FakeDb;
