@@ -15,12 +15,11 @@ require('dotenv').config();
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(config.GUITAR_DB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => {
-    // if(process.env.NODE_ENV !== 'production'){
-    //     const fakeDb = new FakeDb();
-    //     fakeDb.seedDb();
-    // }
-  });
+mongoose.set("useCreateIndex", true);
+mongoose.connect(config.GUITAR_DB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
+    .then(() => console.log("Mongo DB Connected"))
+    .catch((err) => console.log("Err is", err));
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -42,7 +41,7 @@ const { Wood } = require('./models/wood');
 const { Product } = require('./models/product');
 const { Payment } = require('./models/payment');
 const { Site } = require('./models/site')
-
+  
 //Middleware
 const { auth } =require('./middleware/auth');
 const { admin } =require('./middleware/admin');
@@ -486,7 +485,6 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
   )
 })
 
-console.log('NODE_ENV ', process.env.NODE_ENV);
 
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ){
