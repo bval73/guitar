@@ -484,18 +484,14 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
   )
 })
 
-
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ){
   const path = require('path');
-  console.log('dirname ', __dirname);
-  app.get('/*',(req,res)=>{
+  app.get('/',(req,res)=>{
+    console.log('dirname ', path.resolve(__dirname,'../client','build','index.html'));
       res.sendfile(path.resolve(__dirname,'../client','build','index.html'));
   })
 }
-
-
-
 
 const port = process.envPORT || 3001;
 
