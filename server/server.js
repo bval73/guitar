@@ -497,5 +497,6 @@ const port = process.envPORT || 3001;
 
 app.listen(port, () => {
   console.log(`Server Running on port ${port}`);
+  console.log('dirname ', __dirname);
 })
 
