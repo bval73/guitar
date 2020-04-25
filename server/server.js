@@ -485,8 +485,9 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
   )
 })
 
+process.env.NODE_ENV = 'production';
 //DEFAULT
-if( process.env.NODE_ENV === 'production' ){
+if( process.env.NODE_ENV === 'production' ) {
 //  const path = require('path');
 
 const appPath = path.join(__dirname, '../client', 'build');  
