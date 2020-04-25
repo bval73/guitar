@@ -9,7 +9,7 @@
     "server": "nodemon server/server.js",
     "build": "npm run build --prefix client",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "engines": {
     "node": "10.16.3",
