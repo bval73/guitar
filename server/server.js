@@ -487,11 +487,9 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ) {
-//  const path = require('path');
-
-const appPath = path.join(__dirname, '../client', 'build');  
-app.use(express.static(appPath));
-  app.get('*', function(req,res){
+  const appPath = path.join(__dirname, '../client', 'build');  
+  app.use(express.static(appPath));
+  app.get('/*', function(req,res){
       res.sendfile(path.resolve(appPath,'index.html'));
   })
   console.log('appPath ', appPath);
@@ -501,6 +499,5 @@ const port = process.envPORT || 3001;
 
 app.listen(port, () => {
   console.log(`Server Running on port ${port}`);
-  
 })
 
