@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-
+app.use(express.static('client/build'));
 
 cloudinary.config({
   cloud_name: config.CLOUD_NAME,
@@ -488,8 +488,8 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ) {
   const appPath = path.join(__dirname, '../client', 'build');  
-  app.use(express.static(appPath));
-  app.get('/*', function(req,res){
+//  app.use(express.static(appPath));
+  app.get('/*', (req,res) => {
       res.sendfile(path.resolve(appPath,'index.html'));
   })
   console.log('appPath ', appPath);
