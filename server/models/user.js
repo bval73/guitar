@@ -61,6 +61,7 @@ userSchema.methods.hasSamePassword = function(requestedPassword){
 }
 
 //encrypt password..
+//could send welcome email from here
 userSchema.pre('save', function(next) {
     const user = this;
     

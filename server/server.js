@@ -47,6 +47,34 @@ const { Site } = require('./models/site')
 const { auth } =require('./middleware/auth');
 const { admin } =require('./middleware/admin');
 
+//UTILS
+const { sendEmail } = require('./utils/mail/index');
+
+// const smptTransport = mailer.createTransport({
+//   service: "Gmail",
+//   auth: {
+//     user: "billvalentine73@gmail.com",
+//     pass: config.GMAIL_PASS
+//   }
+// });
+
+// var mail = {
+//   from: "Guitars <billvalentine73@gmail.com>",
+//   to: "bvalentineii@hotmail.com",
+//   subject: "Welcome",
+//   text: "Testing the guitar site mail",
+//   html:"<b>Testing the site mail </b>"
+// }
+
+// smptTransport.sendMail(mail, function(err, res) {
+//   if(err) {
+//     console.log(err)
+//   } else {
+//     console.log(res)
+//   }
+//   smptTransport.close();
+// });
+
 
 //================================================
 //          PRODUCTS
@@ -236,7 +264,8 @@ app.post('/api/users/register', (req, res) => {
 
   user.save((err, doc) => {
     if(err) return res.json({success: false, err});
-    res.status(200).json({
+    sendEmail(doc.email, doc.name, null, "welcome");
+    return res.status(200).json({
       success: true
     })
   })
