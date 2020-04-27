@@ -482,7 +482,7 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ) {
-  const appPath = path.join(__dirname, '../client', 'build/');  
+  const appPath = path.join(__dirname, '../client', 'build');  
   app.get('/*', (req,res) => {
       res.sendfile(path.resolve(appPath,'index.html'));
   })
