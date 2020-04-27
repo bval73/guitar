@@ -47,14 +47,6 @@ const { Site } = require('./models/site')
 const { auth } =require('./middleware/auth');
 const { admin } =require('./middleware/admin');
 
-/*
-app.all('/', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
-
-*/
 
 //================================================
 //          PRODUCTS
@@ -490,8 +482,7 @@ app.post('/api/site/site_data', auth, admin, (req, res) => {
 
 //DEFAULT
 if( process.env.NODE_ENV === 'production' ) {
-  const appPath = path.join(__dirname, '../client', 'build');  
-//  app.use(express.static(appPath));
+  const appPath = path.join(__dirname, '../client', 'build/');  
   app.get('/*', (req,res) => {
       res.sendfile(path.resolve(appPath,'index.html'));
   })
