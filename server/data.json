@@ -31,20 +31,6 @@
     "wood":"5e7ea7e10041662f404d6b5a",
     "frets":24,
     "publish":true
-  }],
-  "users":[{
-    "role":1,
-    "name":"William",
-    "lastname":"Valentine",
-    "email":"bvalentineii@hotmail.com",
-    "password":"gagt5166"
-  },
-  {
-    "role":1,
-    "name":"Billy",
-    "lastname":"Bob",
-    "email":"billybob@gmail.com",
-    "password":"billybob"
   }]
 }
 
