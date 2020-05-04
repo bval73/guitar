@@ -120,7 +120,7 @@ app.get('/api/users/admin_files', auth, admin, (req, res) => {
   })
 })
 
-app.get('/api/user/download/:id', auth, admin, (req, res) => {
+app.get('/api/users/download/:id', auth, admin, (req, res) => {
   const file = path.resolve(".")+`/uploads/${req.params.id}`;
   console.log('file is ',file);
   res.download(file);

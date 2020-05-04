@@ -57,8 +57,8 @@ class AddFile extends Component {
     this.state.files ? 
       this.state.files.map((item, i) => (
 //TODO SEEMS TO BE HAVING ISSUES
-<li key={i}>
-          <Link to={`/ai/users/download/${item}`} target="_blank">
+        <li key={i}>
+          <Link to={`/api/users/download/${item}`} target="_blank">
           {item}
           </Link>
         </li>
