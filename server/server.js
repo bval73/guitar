@@ -8,7 +8,11 @@ const express = require('express'),
       cookieParser = require('cookie-parser'),
       formidable = require('express-formidable'),
       cloudinary = require('cloudinary'),
-      async = require('async');
+      async = require('async'),
+      SHA1 = require('crypto-js/sha256'),
+      multer = require('multer')
+      moment = require('moment'),
+      fs = require('fs');
 
 
 
@@ -50,6 +54,11 @@ const { admin } =require('./middleware/admin');
 //UTILS
 const { sendEmail } = require('./utils/mail/index');
 
+// const date = new Date();
+// const po = `PO-${Date.now()}-${SHA1("39e1yj6ety6j9tyeJ").toString().substring(0,8)}`;
+
+// console.log(po);
+
 // const smptTransport = mailer.createTransport({
 //   service: "Gmail",
 //   auth: {
@@ -74,6 +83,48 @@ const { sendEmail } = require('./utils/mail/index');
 //   }
 //   smptTransport.close();
 // });
+
+// Storage Multer Config
+let storage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, 'uploads/')
+  },
+  filename: (req,file,cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`)
+  }
+  // fileFilter:(req,file,cb)=>{
+
+    //     const ext = path.extname(file.originalname)
+    //     if(ext !== '.jpg' && ext !== '.png'){
+    //         return cb(res.status(400).end('only jpg, png is allowed'),false);
+    //     }
+
+    //     cb(null,true)
+    // }
+});
+const upload = multer({storage: storage}).single('file');
+
+app.post('/api/users/uploadfile', auth, admin, (req,res) => {
+  upload(req, res, (err) => {
+    if(err) {
+      return res.json({success: false, err})
+    }
+    return res.json({success:true})
+  })
+})
+
+app.get('/api/users/admin_files', auth, admin, (req, res) => {
+  const dir = path.resolve(".")+'/uploads';
+  fs.readdir(dir, (err,items) => {
+    return res.status(200).send(items);
+  })
+})
+
+app.get('/api/user/download/:id', auth, admin, (req, res) => {
+  const file = path.resolve(".")+`/uploads/${req.params.id}`;
+  console.log('file is ',file);
+  res.download(file);
+})
 
 
 //================================================
@@ -244,6 +295,47 @@ app.get('/api/product/getbrands', (req, res) => {
 //          USERS
 //================================================
 
+
+app.post('/api/users/reset_user', (req, res) => {
+  User.findOne(
+    {'email': req.body.email},
+    (err, user) =>{
+      if(!user) return res.json({succes: false, err});
+      user.generateResetToken((err,user) => {
+        if(err) return res.json({succes: false, err});
+        sendEmail(user.email,user.name,null,"reset_password",user)
+        return res.json({success:true})
+
+      })
+    }
+  )
+})
+
+app.post('/api/users/reset_password', (req,res) => {
+  const today = moment().startOf('day').valueOf();
+  User.findOne({
+    resetToken: req.body.resetToken,
+    resetTokenExp:{
+      $gte: today
+    }
+  }, (err, user) => {
+    if(!user)  return res.json({success: false, message: 'Time limit has passed, pleae go to reset page againand create a new token'})
+
+    user.password = req.body.password;
+    user.resetToken = '';
+    user.resetTokenExp = '';
+
+    user.save((err,doc) => {
+      if(err) return res.json({success: false, err});
+      return res.status(200).json({
+        success: true
+      })
+    })
+
+  })
+
+})
+
 app.get('/api/users/auth', auth, (req, res) => {
   res.status(200).json({
     isAdmin: req.user.role === 0 ? false : true,
@@ -401,11 +493,13 @@ app.post('/api/users/successBuy', auth, (req, res) => {
 
   let history = [];
   let transactionData = {};
-  let user = req.user;
+  const userD = req.user;
+  const date = new Date();
+  const po = `PO-${Date.now()}-${SHA1(userD._id).toString().substring(0,8)}`;
 
-  //TODO user history
   req.body.cartDetail.forEach((item) => {
     history.push({
+      porder: po,
       dateOfPurchase: Date.now(),
       name: item.name,
       brand: item.brand.name,
@@ -418,16 +512,19 @@ app.post('/api/users/successBuy', auth, (req, res) => {
 
   //TODO payment info
   transactionData.user = {
-    id: user._id,
-    name: user.name,
-    lastname: user.lastname,
-    email: user.email
+    id: userD._id,
+    name: userD.name,
+    lastname: userD.lastname,
+    email: userD.email
   }
-  transactionData.data = req.body.paymentData;
+  transactionData.data = {
+    ...req.body.paymentData,
+    porder: po
+  };
   transactionData.product = history;
 
-  User.findOneAndUpdate(
-    { _id: user._id },
+  User.updateOne(
+    { _id: userD._id },
     { $push: {history: history}, $set:{cart: [] } },
     { new: true },
     (err, user) => {
@@ -442,7 +539,7 @@ app.post('/api/users/successBuy', auth, (req, res) => {
           doc.product.forEach(item => {
             products.push({id: item.id, quantity: item.quantity})
           })
-//for each item in the products array update  quantity
+
           async.eachSeries(products, (item, callback) => {
             Product.update(
               {_id: item.id},
@@ -454,17 +551,16 @@ app.post('/api/users/successBuy', auth, (req, res) => {
             )
           },(err) => {
             if(err) res.status(401).json({succes: false, err});
+            sendEmail(userD.email, userD.name, null, "purchase", transactionData)
             res.status(200).json({
               success: true,
               cart: user.cart,
               cartDetail: []
             })
           })
-
         })
     }
   )
-
 })
 
 app.post('/api/users/update_profile', auth, (req, res) => {

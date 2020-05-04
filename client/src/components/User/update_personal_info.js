@@ -64,7 +64,7 @@ class UpdatePersonalInfo extends Component {
 
   updateForm =(element) => {
     const newFormdata = update(element, this.state.formdata, 'update_user');
-    console.log('updateForm ', newFormdata);
+//    console.log('updateForm ', newFormdata);
     this.setState({
       formError: false,
       formdata: newFormdata
