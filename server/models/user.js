@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt'), //for encryption of password..
 mongoose = require('mongoose'),
 Schema = mongoose.Schema,
 jwt = require('jsonwebtoken'),
+crypto = require('crypto'),
+moment = require('moment'),
 config = require('../config');
 
 
@@ -49,6 +51,12 @@ const userSchema = new Schema({
     token: {
       type: String
     },
+    resetToken: {
+      type: String
+    },
+    resetTokenExp: {
+      type: Number
+    },
     product: [{
     type: Schema.Types.ObjectId,
     ref: 'Product'
@@ -85,6 +93,23 @@ userSchema.methods.comparePassword = function(password, cb) {
   bcrypt.compare(password, this.password, function(err, isMatch){
     if(err) {return cb(err)};
     cb(null,isMatch)
+  })
+}
+
+userSchema.methods.generateResetToken = function(cb) {
+  var user = this;
+
+  crypto.randomBytes(20, function(err, buffer) {
+    var token = buffer.toString('hex');
+    var today = moment().startOf('day').valueOf();
+    var tomorrow = moment(today).endOf('day').valueOf();
+
+    user.resetToken = token
+    user.resetTokenExp = tomorrow;
+    user.save(function(err, user) {
+      if(err) {return cb(err)};
+      cb(null, user);
+    })
   })
 }
 

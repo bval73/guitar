@@ -8,13 +8,14 @@ const UserHistoryBlock = (props) => {
     props.products ?
       props.products.map((item, i) => (
         <tr key={i}>
+          <td>{item.porder}</td>
           <td>{moment(item.dateOfPurchase).format("MM-DD-YYYY")}</td>
           <td>{item.brand} {item.name}</td>
           <td>${item.price}</td>
           <td>{item.quantity}</td>
         </tr>
       ))
-    :null
+    :<tr><td>You don't have any purchase history..</td></tr>
 
   )
 
@@ -23,7 +24,8 @@ const UserHistoryBlock = (props) => {
       <table>
         <thead>
           <tr>
-            <th>Date of purchase</th>
+            <th>Purchase order#</th>
+            <th>Date of Purchase</th>
             <th>Product</th>
             <th>Price paid</th>
             <th>Quantity</th>

@@ -190,12 +190,12 @@ class AddProduct extends Component {
     }
   }
   
-
+//TODO need to finish this up. 
   buildFormFields = () => {
     //flip through the object keys in the render to fill the form
     let formFieldsLength = Object.keys(this.state.formdata).length;
-    console.log('length is ', formFieldsLength);
-    console.log(Object.keys(this.state.formdata)[5]);
+    // console.log('length is ', formFieldsLength);
+    // console.log(Object.keys(this.state.formdata)[5]);
     // return (
     //   <Formfield 
     //     id={'name'}

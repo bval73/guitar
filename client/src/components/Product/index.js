@@ -18,7 +18,7 @@ class ProductPage extends Component {
     this.props.dispatch(getProductDetail(id))
       .then(response => {
         if(!this.props.products.prodDetail) {
-          console.log('no article found');
+//          console.log('no article found');
           this.props.history.push('/shop'); //TODO maybe item not found page
         }
       });
